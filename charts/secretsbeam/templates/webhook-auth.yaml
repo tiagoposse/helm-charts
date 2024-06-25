@@ -17,10 +17,15 @@ kind: ClusterRole
 metadata:
   name: {{ include "webhook.fullname" . }}
 rules:
-
   - apiGroups: [""]
     resources: [events]
     verbs: [create]
+  - apiGroups: [""]
+    resources: ["pods", "serviceaccounts"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["orbitops.dev"]
+    resources: ["externalsecrets", "externalsecretaccesses"]
+    verbs: ["get", "list", "watch", "update", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

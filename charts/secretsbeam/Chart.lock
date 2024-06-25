@@ -1,0 +1,6 @@
+dependencies:
+- name: webhook-cert-gen
+  repository: https://tiagoposse.github.io/helm-charts
+  version: 0.1.0
+digest: sha256:eefadf97ddeb328772f5c1cf170571a760321594bde23c689669f937c86e4c0d
+generated: "2024-06-25T16:24:49.534941+02:00"
