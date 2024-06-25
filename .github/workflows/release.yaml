@@ -33,7 +33,6 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-
       - name: Add repos
         run: |
           helm repo add tposse https://tiagoposse.github.io/helm-charts
