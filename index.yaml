@@ -1,0 +1,25 @@
+apiVersion: v1
+entries:
+  secretsbeam:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-06-25T14:22:13.767307368Z"
+    description: A Helm chart for Kubernetes
+    digest: e842fb4c19c9f4a9e42084c2b1bc754d20d68fabd8ecd34ffb04f24df4c30f20
+    name: secretsbeam
+    type: application
+    urls:
+    - https://github.com/tiagoposse/helm-charts/releases/download/secretsbeam-0.1.0/secretsbeam-0.1.0.tgz
+    version: 0.1.0
+  webhook-cert-gen:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-06-25T14:22:13.907660723Z"
+    description: A Helm chart for Kubernetes
+    digest: be1245a1b5a0562b936f7f33197583f042fe941e5a7e2d774615308671065322
+    name: webhook-cert-gen
+    type: application
+    urls:
+    - https://github.com/tiagoposse/helm-charts/releases/download/webhook-cert-gen-0.1.0/webhook-cert-gen-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-06-25T14:22:13.907666874Z"
