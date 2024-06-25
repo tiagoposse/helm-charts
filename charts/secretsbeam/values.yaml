@@ -3,7 +3,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# Default values for kscp.
+# Default values for secretsbeam.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -16,10 +16,10 @@ webhook:
   replicaCount: 1
 
   image:
-    repository: kscp-webhook
+    repository: tposse/secretsbeam-webhook
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: latest
+    tag: v0.1.0
 
   certPath: /tlsconfig/tls.crt
   keyPath: /tlsconfig/tls.key
@@ -48,7 +48,7 @@ webhook:
     port: 443
 
   env:
-    AWS_AGENT_IMAGE: kscp-aws-agent:latest
+    AWS_AGENT_IMAGE: tposse/secretsbeam-aws-init:v0.1.0
 
   resources: {}
   autoscaling:
@@ -61,9 +61,55 @@ webhook:
   tolerations: []
   affinity: {}
 
+
+operator:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: tposse/secretsbeam-operator
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: v0.1.0
+
+  rbac:
+    create: true
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  matchPolicy: Equivalent
+  failurePolicy: Ignore
+  namespaceSelector: {}
+  sideEffects: None
+  timeoutSeconds: 10
+  reinvocationPolicy: Never
+
+  env: {}
+  resources: {}
+  autoscaling:
+    enabled: false
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+
+
 certificateGenerator:
   enabled: enabled
 
+webhook-cert-gen:
   image:
     repository: chainguard/kube-webhook-certgen
     pullPolicy: IfNotPresent
@@ -77,18 +123,16 @@ certificateGenerator:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
+  
+  secret:
+    name: secretsbeam-webhook-cert
+    namespace:
+    certSecretKey: tls.crt
+    keySecretKey: tls.key
 
-
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
+  webhook:
+    name: 001-secretsbeam.orbitops.dev
+    service: secretsbeam-webhook
+    patch:
+      mutating: true
+      validating: false

@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "webhook-cert-gen.fullname" . }}-patch
+  labels:
+    {{- include "webhook-cert-gen.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-5"
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "webhook-cert-gen.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "webhook-cert-gen.serviceAccountName" .  }}
+      containers:
+        - name: certificate-generator
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - patch
+            - --patch-mutating={{ .Values.webhook.patch.mutating }}
+            - --patch-validating={{ .Values.webhook.patch.validating }}
+            - --secret-name={{ .Values.secret.name }}
+            - --namespace={{ .Release.Namespace }}
+            - --webhook-name={{ include "webhook-cert-gen.webhook" . }}
+      restartPolicy: OnFailure

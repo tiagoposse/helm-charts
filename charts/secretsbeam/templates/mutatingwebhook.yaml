@@ -2,12 +2,12 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: {{ include "webhook.fullname" . }}
+  name: {{ include "secretsbeam.webhookName" . }}
   annotations:
     helm.sh/hook: pre-install
     helm.sh/hook-weight: "-100"
 webhooks:
-- name: {{ include "webhook.fullname" . }}.kscp.io
+- name: pods-webhook.orbitops.dev
   admissionReviewVersions:
     - v1
   matchPolicy: {{ .Values.webhook.matchPolicy }}
@@ -20,7 +20,7 @@ webhooks:
     service:
       namespace: {{ .Release.Namespace }}
       name: {{ include "webhook.fullname" . }}
-      path: /mutate
+      path: /pods
       port: {{ .Values.webhook.service.port }}
     caBundle: {{ .Values.webhook.ca }}
   rules:
@@ -33,6 +33,35 @@ webhooks:
       - "v1"
     resources:
       - "pods"
+  sideEffects: {{ .Values.webhook.sideEffects }}
+  timeoutSeconds: {{ .Values.webhook.timeoutSeconds | int }}
+  reinvocationPolicy: {{ .Values.webhook.reinvocationPolicy }}
+- name: service-accounts-webhook.orbitops.dev
+  admissionReviewVersions:
+    - v1
+  matchPolicy: {{ .Values.webhook.matchPolicy }}
+  failurePolicy: {{ .Values.webhook.failurePolicy }}
+  {{- if .Values.webhook.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml .Values.webhook.namespaceSelector | nindent 4 }}
+  {{ end }}
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ include "webhook.fullname" . }}
+      path: /serviceaccounts
+      port: {{ .Values.webhook.service.port }}
+    caBundle: {{ .Values.webhook.ca }}
+  rules:
+  - operations:
+      - "CREATE"
+      - "UPDATE"
+    apiGroups:
+      - ""
+    apiVersions:
+      - "v1"
+    resources:
+      - "serviceaccounts"
   sideEffects: {{ .Values.webhook.sideEffects }}
   timeoutSeconds: {{ .Values.webhook.timeoutSeconds | int }}
   reinvocationPolicy: {{ .Values.webhook.reinvocationPolicy }}
