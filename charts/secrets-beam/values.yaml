@@ -3,7 +3,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# Default values for secretsbeam.
+# Default values for secrets-beam.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -16,7 +16,7 @@ webhook:
   replicaCount: 1
 
   image:
-    repository: tposse/secretsbeam-webhook
+    repository: tposse/secrets-beam-webhook
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: v0.1.0
@@ -48,7 +48,7 @@ webhook:
     port: 443
 
   env:
-    AWS_AGENT_IMAGE: tposse/secretsbeam-aws-init:v0.1.0
+    AWS_AGENT_IMAGE: tposse/secrets-beam-aws-init:v0.1.0
 
   resources: {}
   autoscaling:
@@ -68,7 +68,7 @@ operator:
   replicaCount: 1
 
   image:
-    repository: tposse/secretsbeam-operator
+    repository: tposse/secrets-beam-operator
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: v0.1.0
@@ -125,14 +125,14 @@ webhook-cert-gen:
     name: ""
   
   secret:
-    name: secretsbeam-webhook-cert
+    name: secrets-beam-webhook-cert
     namespace:
     certSecretKey: tls.crt
     keySecretKey: tls.key
 
   webhook:
-    name: 001-secretsbeam.orbitops.dev
-    service: secretsbeam-webhook
+    name: 001-secrets-beam.orbitops.dev
+    service: secrets-beam-webhook
     patch:
       mutating: true
       validating: false

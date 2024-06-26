@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "secretsbeam.name" -}}
+{{- define "secrets-beam.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "secretsbeam.fullname" -}}
+{{- define "secrets-beam.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "secretsbeam.chart" -}}
+{{- define "secrets-beam.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "secretsbeam.labels" -}}
-helm.sh/chart: {{ include "secretsbeam.chart" . }}
-{{ include "secretsbeam.selectorLabels" . }}
+{{- define "secrets-beam.labels" -}}
+helm.sh/chart: {{ include "secrets-beam.chart" . }}
+{{ include "secrets-beam.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,21 +46,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Common selector labels
 */}}
-{{- define "secretsbeam.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "secretsbeam.name" . }}
+{{- define "secrets-beam.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "secrets-beam.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
 {{- define "webhook.fullname" -}}
-{{- printf "%s-webhook" (include "secretsbeam.fullname" .) }}
+{{- printf "%s-webhook" (include "secrets-beam.fullname" .) }}
 {{- end }}
 
 {{/*
 webhook labels
 */}}
 {{- define "webhook.labels" -}}
-{{- include "secretsbeam.labels" . }}
+{{- include "secrets-beam.labels" . }}
 component.orbitops.dev: webhook
 {{- end }}
 
@@ -68,7 +68,7 @@ component.orbitops.dev: webhook
 webhook selector labels
 */}}
 {{- define "webhook.selectorLabels" -}}
-{{- include "secretsbeam.selectorLabels" . }}
+{{- include "secrets-beam.selectorLabels" . }}
 component.orbitops.dev: webhook
 {{- end }}
 
@@ -78,7 +78,7 @@ Create the name of the webhook service account to use
 */}}
 {{- define "webhook.serviceAccountName" -}}
 {{- if .Values.webhook.serviceAccount.create }}
-{{- default (printf "%s-webhook" (include "secretsbeam.fullname" .)) .Values.webhook.serviceAccount.name }}
+{{- default (printf "%s-webhook" (include "secrets-beam.fullname" .)) .Values.webhook.serviceAccount.name }}
 {{- else }}
 {{- default .Values.webhook.serviceAccount.name }}
 {{- end }}
@@ -86,14 +86,14 @@ Create the name of the webhook service account to use
 
 
 {{- define "operator.fullname" -}}
-{{- printf "%s-operator" (include "secretsbeam.fullname" .) }}
+{{- printf "%s-operator" (include "secrets-beam.fullname" .) }}
 {{- end }}
 
 {{/*
 operator labels
 */}}
 {{- define "operator.labels" -}}
-{{- include "secretsbeam.labels" . }}
+{{- include "secrets-beam.labels" . }}
 component.orbitops.dev: operator
 {{- end }}
 
@@ -101,7 +101,7 @@ component.orbitops.dev: operator
 operator selector labels
 */}}
 {{- define "operator.selectorLabels" -}}
-{{- include "secretsbeam.selectorLabels" . }}
+{{- include "secrets-beam.selectorLabels" . }}
 component.orbitops.dev: operator
 {{- end }}
 
@@ -110,7 +110,7 @@ Create the name of the operator service account to use
 */}}
 {{- define "operator.serviceAccountName" -}}
 {{- if .Values.operator.serviceAccount.create }}
-{{- default (printf "%s-operator" (include "secretsbeam.fullname" .)) .Values.operator.serviceAccount.name }}
+{{- default (printf "%s-operator" (include "secrets-beam.fullname" .)) .Values.operator.serviceAccount.name }}
 {{- else }}
 {{- default .Values.operator.serviceAccount.name }}
 {{- end }}
@@ -120,12 +120,12 @@ Create the name of the operator service account to use
 Certificate generator labels
 */}}
 {{- define "certificateGenerator.labels" -}}
-{{- include "secretsbeam.labels" . }}
+{{- include "secrets-beam.labels" . }}
 component.orbitops.dev: cert-gen
 {{- end }}
 
 {{- define "certificateGenerator.fullname" -}}
-{{- printf "%s-certificate-generator" (include "secretsbeam.fullname" .) }}
+{{- printf "%s-certificate-generator" (include "secrets-beam.fullname" .) }}
 {{- end }}
 
 {{/*
@@ -133,7 +133,7 @@ Create the name of the cert-gen service account to use
 */}}
 {{- define "certificateGenerator.serviceAccountName" -}}
 {{- if .Values.certificateGenerator.serviceAccount.create }}
-{{- default (printf "%s-cert-gen" (include "secretsbeam.fullname" .)) .Values.certificateGenerator.serviceAccount.name }}
+{{- default (printf "%s-cert-gen" (include "secrets-beam.fullname" .)) .Values.certificateGenerator.serviceAccount.name }}
 {{- else }}
 {{- default .Values.certificateGenerator.serviceAccount.name }}
 {{- end }}
@@ -142,7 +142,7 @@ Create the name of the cert-gen service account to use
 {{/*
 Create the name of the webhook to use
 */}}
-{{- define "secretsbeam.webhookName" -}}
+{{- define "secrets-beam.webhookName" -}}
 {{- if .Values.certificateGenerator.enabled }}
 {{- (index .Values "webhook-cert-gen").webhook.name }}
 {{- else }}
@@ -150,10 +150,10 @@ Create the name of the webhook to use
 {{- end }}
 {{- end }}
 
-{{- define "secretsbeam.serviceName" -}}
+{{- define "secrets-beam.serviceName" -}}
 {{- if .Values.certificateGenerator.enabled }}
 {{- (index .Values "webhook-cert-gen").webhook.service }}
 {{- else }}
-{{- include "secretsbeam.fullname" . }}
+{{- include "secrets-beam.fullname" . }}
 {{- end }}
 {{- end }}
